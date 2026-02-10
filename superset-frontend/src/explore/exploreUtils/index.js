@@ -246,6 +246,7 @@ export const exportChart = ({
 }) => {
   let url;
   let payload;
+  let form_data;
   const [useLegacyApi, parseMethod] = getQuerySettings(formData);
   if (useLegacyApi) {
     const endpointType = getLegacyEndpointType({ resultFormat, resultType });
@@ -255,6 +256,7 @@ export const exportChart = ({
       allowDomainSharding: false,
     });
     payload = formData;
+    form_data = safeStringify(payload)
   } else {
     url = '/api/v1/chart/data';
     payload = buildV1ChartDataPayload({
@@ -265,9 +267,11 @@ export const exportChart = ({
       ownState,
       parseMethod,
     });
+    form_data = safeStringify(payload)
+    form_data = btoa(form_data)
   }
 
-  SupersetClient.postForm(url, { form_data: safeStringify(payload) });
+  SupersetClient.postForm(url, { form_data: form_data });
 };
 
 export const exploreChart = (formData, requestParams) => {
