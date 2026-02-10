@@ -19,6 +19,7 @@ from __future__ import annotations
 import contextlib
 import json
 import logging
+import base64
 from typing import Any, TYPE_CHECKING
 
 import simplejson
@@ -232,6 +233,12 @@ class ChartDataRestApi(ChartRestApi):
             # CSV export submits regular form data
             with contextlib.suppress(TypeError, json.JSONDecodeError):
                 json_body = json.loads(request.form["form_data"])
+        if json_body is None:
+            try:
+                body = base64.b64decode(request.form["form_data"]).decode("utf-8")
+                json_body = json.loads(body)
+            except:
+                pass
         if json_body is None:
             return self.response_400(message=_("Request is not JSON"))
 

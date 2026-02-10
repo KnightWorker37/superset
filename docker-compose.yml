@@ -119,13 +119,15 @@ services:
       disable: true
 
   superset-node:
-    image: node:16
+    image: node:16-bookworm-slim
     container_name: superset_node
     command: ["/app/docker/docker-frontend.sh"]
     env_file: docker/.env
     depends_on: *superset-depends-on
     environment:
       SCARF_ANALYTICS: "${SCARF_ANALYTICS}"
+      PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: true
+      # BUILD_SUPERSET_FRONTEND_IN_DOCKER: false
     volumes: *superset-volumes
 
   superset-worker:
