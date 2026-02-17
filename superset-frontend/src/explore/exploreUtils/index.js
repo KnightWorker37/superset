@@ -268,7 +268,9 @@ export const exportChart = ({
       parseMethod,
     });
     form_data = safeStringify(payload)
-    form_data = btoa(form_data)
+    const bytes = new TextEncoder().encode(form_data);
+    const binString = Array.from(bytes, (byte) => String.fromCodePoint(byte)).join("");
+    form_data = btoa(binString)
   }
 
   SupersetClient.postForm(url, { form_data: form_data });
